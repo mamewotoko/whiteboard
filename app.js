@@ -3,46 +3,51 @@
  * Module dependencies.
  */
 
+var http = require('http');
 var express = require('express');
 var sio = require('socket.io');
-
-var app = module.exports = express.createServer();
-
-// Configuration
-
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
-
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
-});
-
-app.configure('production', function(){
-  app.use(express.errorHandler()); 
-});
-
-// Routes
-
-app.get('/', function(req, res){
-  res.render('index', {
-    title: 'Express'
-  });
-});
+var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
+var errorhandler = require('errorhandler');
 
 var port = 3000;
 if (process.argv.length == 3){
     port = parseInt(process.argv[2]);
 }
+var prefix = "/";
+var router = express.Router();
 
-app.listen(port);
+var app = express();
+var server = http.createServer(app);
+
+// Configuration
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(methodOverride());
+app.use(express.static(__dirname + '/public'));
+
+if('development' == app.get('env')) {
+    app.use(errorhandler({ log: true }));
+}
+
+if('production' == app.get('env')) {
+    app.use(errorhandler());
+}
+
+// Routes
+
+router.get('/', function(req, res){
+  res.render('index', {
+    title: 'Express'
+  });
+});
+
+app.use(prefix, router);
+
+server.listen(port);
 var currentID = 0;
-var io = sio.listen(app)
+var io = sio.listen(server);
 
 io.sockets.on('connection', function (socket) {
 	socket.userID = ++currentID;
@@ -65,4 +70,5 @@ io.sockets.on('connection', function (socket) {
 	})
 });
 
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+//console.log("Express server listening on port %d in %s mode", server.address().port, app.settings.env);
+
