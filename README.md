@@ -50,6 +50,11 @@ The drawing seems fairly smooth with a couple of users at once, but I have no id
   - better/more drawing controls
   - allow users to view multiple boards being drawn at once.
 
+TODO
+----
+* url prefix
+* access.log, error.log
+
 References
 ----------
 

@@ -14,7 +14,6 @@ var port = 3000;
 if (process.argv.length == 3){
     port = parseInt(process.argv[2]);
 }
-var prefix = "/";
 var router = express.Router();
 
 var app = express();
@@ -35,15 +34,13 @@ if('production' == app.get('env')) {
     app.use(errorhandler());
 }
 
-// Routes
-
 router.get('/', function(req, res){
-  res.render('index', {
-    title: 'Express'
-  });
+    res.render('index', {
+        title: 'Express'
+    });
 });
 
-app.use(prefix, router);
+app.use('/', router);
 
 server.listen(port);
 var currentID = 0;
@@ -71,4 +68,3 @@ io.sockets.on('connection', function (socket) {
 });
 
 //console.log("Express server listening on port %d in %s mode", server.address().port, app.settings.env);
-
