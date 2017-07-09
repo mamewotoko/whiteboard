@@ -1,3 +1,4 @@
+![Screenshot](image/whiteboard_screenshot.png)
 
 Overview
 --------
