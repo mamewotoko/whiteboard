@@ -35,7 +35,12 @@ app.get('/', function(req, res){
   });
 });
 
-app.listen(3000);
+var port = 3000;
+if (process.argv.length == 3){
+    port = parseInt(process.argv[2]);
+}
+
+app.listen(port);
 var currentID = 0;
 var io = sio.listen(app)
 
